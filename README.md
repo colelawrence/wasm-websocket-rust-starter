@@ -4,7 +4,7 @@ A starter project that uses Rust/WASM with `wasm-bindgen` and `petgraph` for sho
 
 Quick Loom demo and Overview:
 
-[![Quick Loom demo and Overview](./docs/images/@2025-10-14-loom@2x.jpeg)](https://www.loom.com/share/745c225bf0f44aaea4fab6c77e74c1a4)
+[![Quick Loom demo and Overview](./docs/2025-10-14-loom@2x.jpeg)](https://www.loom.com/share/745c225bf0f44aaea4fab6c77e74c1a4)
 
 ## Quick Start
 
