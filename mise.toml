@@ -13,6 +13,12 @@ _.path = [
 ]
 TILT_PORT = "10308"
 
+[tasks."install-deps"]
+description = "Install JavaScript dependencies"
+run = "bun install"
+sources = ["package.json", "bun.lock"]
+outputs = ["node_modules/**/*"]
+
 [tasks."wasm:build"]
 description = "Build WASM module for production"
 run = "wasm-pack build --target web --out-dir pkg"
@@ -27,12 +33,13 @@ outputs = ["pkg/*.js", "pkg/*.wasm", "pkg/*.ts"]
 
 [tasks.dev]
 description = "Run development server with WASM rebuild"
+depends = ["install-deps"]
 run = "vite"
 # no sources, since this is a long running command
 
 [tasks.build]
 description = "Build for production"
-depends = ["wasm:build"]
+depends = ["install-deps", "wasm:build"]
 run = "vite build"
 sources = ["src/**/*", "vite.config.mts", "tsconfig.json"]
 outputs = ["build/**/*"]
@@ -44,7 +51,7 @@ run = "bunx serve ./build"
 
 [tasks.typecheck]
 description = "Type check TypeScript files"
-depends = ["codegen:typescript"]
+depends = ["install-deps", "codegen:typescript"]
 run = "tsgo --build ."
 sources = ["src/**/*", "tsconfig.json", "package.json", "bun.lock"]
 

@@ -2,54 +2,48 @@
 
 A starter project that uses Rust/WASM with `wasm-bindgen` and `petgraph` for shortest path computation, and D3.js for visualization.
 
-## Prerequisites
+## Quick Start
 
-Install `mise` and `wasm-pack`:
+1. Install `mise`:
 ```bash
-# Install mise
 curl https://mise.run | sh
-
-# Install wasm-pack
-curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
+# or: brew install mise
 ```
 
-Or with Homebrew:
+2. Trust and install:
 ```bash
-brew install mise wasm-pack
+mise trust
+mise install    # Installs Rust, Bun, Tilt, wasm-pack, etc.
 ```
 
-## Setup
-
-1. Install dependencies:
+3. Start development:
 ```bash
-bun install
+mise run tilt
 ```
 
-2. Start development (builds WASM and runs dev server):
+That's it! This starts the full development environment with WASM auto-rebuild, Vite dev server, and WebSocket server.
+
+## Development Commands
+
 ```bash
-bun run dev
-# or directly: mise run dev
+# Start full dev environment (recommended)
+mise run tilt         # or: tilt up
+mise run tilt:down    # Stop all resources
+
+# Manual development (if not using Tilt)
+mise run dev          # Vite dev server only
+mise run server       # WebSocket server only
+mise run wasm:watch   # Auto-rebuild WASM on changes
+
+# Building
+mise run build        # Production build
+mise run wasm:build   # Build WASM only
+
+# Type checking & testing
+mise run typecheck    # Check TypeScript types
+cargo test            # Run Rust tests
+bun test              # Run TypeScript tests
 ```
-
-## Available Commands
-
-### Using Tilt (Recommended)
-- `mise run tilt` or `tilt up` - Start all development resources (WASM build + dev server)
-- `mise run tilt:down` or `tilt down` - Stop all resources
-
-### Using mise directly
-- `bun run dev` or `mise run dev` - Build WASM and start dev server
-- `bun run build` or `mise run build` - Production build
-- `bun run wasm:watch` - Watch Rust files and rebuild WASM on changes
-- `mise run wasm:dev` - Build WASM once (dev mode)
-- `mise run wasm:build` - Build WASM once (production)
-
-## Tilt Resources
-
-The Tiltfile sets up three local resources:
-1. **wasm-build** - Watches Rust files and rebuilds WASM on changes
-2. **vite-server** - Runs the Vite dev server (depends on wasm-build)
-3. **typecheck** - TypeScript type checking (manual trigger)
 
 ## Project Structure
 
