@@ -1,6 +1,5 @@
 pub mod pathfinder;
 pub mod router;
-pub mod types;
 pub mod utils;
 
 #[cfg(test)]

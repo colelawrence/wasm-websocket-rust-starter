@@ -28,7 +28,7 @@ export function generateTypeScript(input: gen.Input): gen.Output {
   const fns = parseRouterFns(input, errors);
   
   // Generate router types file
-  const routerOutput = generateRouterTypes(fns, "../shared-types/src/");
+  const routerOutput = generateRouterTypes(fns, "../");
   
   // Generate main types file
   const typesOutput = generateTypes(input, "../");

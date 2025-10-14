@@ -74,8 +74,8 @@ run = "tilt down"
 
 [tasks."codegen:typescript"]
 description = "Generate TypeScript types from Rust types"
-run = "cargo test --features codegen generate_typescript -- --ignored"
-sources = ["src-rust/**/*.rs", "Cargo.toml", "cg-types/generators/*.ts", "cg-types/src/**/*.rs"]
+run = "cargo test -p shared-types --features codegen generate_typescript -- --ignored"
+sources = ["src-rust/**/*.rs", "Cargo.toml", "cg-types/generators/*.ts", "cg-types/src/**/*.rs", "generators/**/*.ts"]
 outputs = ["cg-types/generators/gen/**/*", "generators/**/*"]
 
 # Uncomment to pin tool versions
