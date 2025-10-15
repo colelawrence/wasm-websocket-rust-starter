@@ -3,9 +3,10 @@
 # Local resource for building WASM module with watch
 local_resource(
     'wasm-build',
-    serve_cmd='mise watch -t wasm:dev',
+    cmd='mise run --force wasm:dev',
     labels=['build'],
     allow_parallel=False
+    auto_init=False
 )
 
 # Local resource for WebSocket server
