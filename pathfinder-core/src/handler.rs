@@ -2,7 +2,7 @@ use crate::compute_shortest_path;
 use shared_types::context::Context;
 use shared_types::router::{CallHandler, ObserverImpl};
 use shared_types::storage::Storage;
-use shared_types::{PathResult, ShortestPathParams};
+use shared_types::{GraphMetrics, GraphMetricsParams, PathResult, ShortestPathParams};
 use std::sync::Arc;
 
 /// PathfinderHandler implements the CallHandler trait
@@ -62,6 +62,38 @@ impl<S: Storage> CallHandler for PathfinderHandler<S> {
                 tx.error(error);
             }
         }
+    }
+
+    fn compute_graph_metrics(
+        &self,
+        _ctx: &Context,
+        params: GraphMetricsParams,
+        tx: ObserverImpl<GraphMetrics>,
+    ) {
+        let node_count = params.points.len();
+        let edge_count = params.edges.len();
+        
+        let total_edge_length: f64 = params.edges.iter()
+            .map(|edge| {
+                crate::euclidean_distance(&params.points[edge.from], &params.points[edge.to])
+            })
+            .sum();
+        
+        let avg_edge_length = if edge_count > 0 {
+            total_edge_length / edge_count as f64
+        } else {
+            0.0
+        };
+
+        let metrics = GraphMetrics {
+            node_count,
+            edge_count,
+            total_edge_length,
+            avg_edge_length,
+        };
+
+        tx.next(metrics);
+        tx.complete("Metrics computed successfully".to_string());
     }
 }
 

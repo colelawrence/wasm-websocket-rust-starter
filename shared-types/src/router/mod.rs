@@ -1,5 +1,4 @@
 use crate::context::Context;
-use crate::*;
 use shared_types_proc::protocol;
 use std::marker::PhantomData;
 
@@ -157,8 +156,4 @@ pub fn handle_request(
     }
 }
 
-impl ToResponseNextGen for PathResult {
-    fn to_response_next_gen(self) -> router_gen::ResponseNextGen {
-        router_gen::ResponseNextGen::find_shortest_path(self)
-    }
-}
+

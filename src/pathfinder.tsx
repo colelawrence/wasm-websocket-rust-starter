@@ -39,6 +39,12 @@ export function PathfinderDemo() {
   const [path, setPath] = useState<number[]>([]);
   const [startIdx, setStartIdx] = useState(0);
   const [endIdx, setEndIdx] = useState(5);
+  const [metrics, setMetrics] = useState<{
+    node_count: number;
+    edge_count: number;
+    total_edge_length: number;
+    avg_edge_length: number;
+  } | null>(null);
 
   useEffect(() => {
     // Save transport preference
@@ -89,6 +95,24 @@ export function PathfinderDemo() {
 
     return () => controller.abort();
   }, [router, points, edges, startIdx, endIdx]);
+
+  useEffect(() => {
+    if (!router) return;
+
+    const controller = router
+      .compute_graph_metrics({
+        points,
+        edges,
+      })
+      .each(
+        (result) => {
+          setMetrics(result);
+        },
+        { signal: AbortSignal.timeout(5000) },
+      );
+
+    return () => controller.abort();
+  }, [router, points, edges]);
 
   useEffect(() => {
     if (!svgRef.current) return;
@@ -233,24 +257,37 @@ export function PathfinderDemo() {
         </div>
       </div>
 
-      {/* Info banner */}
-      <div 
-        className="px-3 py-2 text-label border border-border"
-        style={{ 
-          background: transport === "wasm" 
-            ? "rgba(46, 125, 50, 0.1)" 
-            : "rgba(38, 166, 154, 0.1)"
-        }}
-      >
-        <strong className="text-text">
-          {transport === "wasm" ? "in-browser" : "server-side"}:
-        </strong>{" "}
-        <span className="text-text-secondary">
-          {transport === "wasm" 
-            ? "pathfinding runs locally via WebAssembly" 
-            : "pathfinding via WebSocket (requires server on :10810)"
-          }
-        </span>
+      {/* Metrics banner */}
+      <div className="grid grid-cols-2 gap-4">
+        <div 
+          className="px-3 py-2 text-label border border-border"
+          style={{ 
+            background: transport === "wasm" 
+              ? "rgba(46, 125, 50, 0.1)" 
+              : "rgba(38, 166, 154, 0.1)"
+          }}
+        >
+          <strong className="text-text">
+            {transport === "wasm" ? "in-browser" : "server-side"}:
+          </strong>{" "}
+          <span className="text-text-secondary">
+            {transport === "wasm" 
+              ? "pathfinding runs locally via WebAssembly" 
+              : "pathfinding via WebSocket (requires server on :10810)"
+            }
+          </span>
+        </div>
+        
+        {/* Graph metrics */}
+        {metrics && (
+          <div className="px-3 py-2 text-label border border-border bg-surface">
+            <strong className="text-accent">graph metrics:</strong>{" "}
+            <span className="text-text-secondary">
+              {metrics.node_count} nodes • {metrics.edge_count} edges • 
+              avg length: {metrics.avg_edge_length.toFixed(1)}px
+            </span>
+          </div>
+        )}
       </div>
 
       <p className="text-text-secondary text-label">

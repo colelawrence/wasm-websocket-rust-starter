@@ -36,6 +36,23 @@ pub struct ShortestPathParams {
     pub end_idx: usize,
 }
 
+/// Graph statistics and metrics
+#[protocol("wasm")]
+pub struct GraphMetrics {
+    pub node_count: usize,
+    pub edge_count: usize,
+    pub total_edge_length: f64,
+    pub avg_edge_length: f64,
+}
+
+/// Parameters for computing graph metrics
+#[protocol("wasm")]
+#[codegen(fn = "compute_graph_metrics() -> GraphMetrics")]
+pub struct GraphMetricsParams {
+    pub points: Vec<Point>,
+    pub edges: Vec<Edge>,
+}
+
 #[cfg(test)]
 #[cfg(feature = "codegen")]
 mod generate {
@@ -59,6 +76,17 @@ mod generate {
         typescript_generation
             .pipe_into(&mut typescript_command)
             .with_output_path(cargo_dir.join("../dist-types"))
+            .write();
+
+        // Generate router_gen.rs
+        let mut rust_command = Command::new("bun");
+        rust_command
+            .arg("../generators/generateRustRouterSimple.ts")
+            .current_dir(&cargo_dir);
+
+        derive_codegen::Generation::for_tag("protocol-wasm")
+            .pipe_into(&mut rust_command)
+            .with_output_path(cargo_dir.join("src/router"))
             .write();
     }
 }
