@@ -5,7 +5,7 @@ local_resource(
     'wasm-build',
     cmd='mise run --force wasm:dev',
     labels=['build'],
-    allow_parallel=False
+    allow_parallel=False,
     auto_init=False
 )
 
@@ -27,7 +27,6 @@ local_resource(
 local_resource(
     'vite-server',
     serve_cmd='mise run dev',
-    resource_deps=['wasm-build'],
     labels=['serve'],
     readiness_probe=probe(
         http_get=http_get_action(port=10880, path='/')
